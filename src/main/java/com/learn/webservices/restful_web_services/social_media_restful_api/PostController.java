@@ -1,5 +1,9 @@
 package com.learn.webservices.restful_web_services.social_media_restful_api;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,31 +13,57 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PostController {
 	
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	private PostRepository postRepository;
+	
+	public PostController(PostRepository postRepository) {
+		super();
+		this.postRepository = postRepository;
+	}
+	
 	// / get all posts
 	// GET /posts
 	@GetMapping(path = "/posts")
-	public String getAllPosts() {
-		return "all posts";
+	public List<Post> getAllPosts() {
+		List<Post> allPosts = postRepository.findAll();
+		return allPosts;
 	}
 	
 	// get all user posts
-	@GetMapping(path = "/posts/{id}")
-	public String getAllPostsById(@PathVariable Integer id) {
-		return "all posts by id";
+	@GetMapping(path = "/posts/{user_id}")
+	public List<Post> getAllPostsById(@PathVariable Integer user_id) {
+		List<Post> postsById = postRepository.findByUserId(user_id);
+		return postsById;
 	}
 	
 	// create a posts for a user 
 	// POST /usesrs/{id}/posts
-	@PostMapping(path = "/users/{id}/posts")
-	public String createPostById(@PathVariable Integer id,@RequestParam String description) {
-		return "created a post";
+	@PostMapping(path = "/users/{user_id}/posts")
+	public Post createPostById(@PathVariable Integer user_id,@RequestParam String description) {
+		Post newPost = new Post(user_id,description);
+		postRepository.save(newPost);
+		return newPost;
 	}
 	
 	// retrieve details of a post
 	// GET /users/{id}/posts/{post_id}
-	@GetMapping(path = "/users/{id}/posts/{post_id}")
-	public String getPostsById(@PathVariable Integer id, @PathVariable Integer post_id) {
-		return "all users posts";
+	@GetMapping(path = "/users/{user_id}/posts/{post_id}")
+	public Post getPostsById(@PathVariable Integer user_id, @PathVariable Integer post_id) {
+		List<Post> postsByUserId = postRepository.findByUserId(user_id);
+		for (Post post: postsByUserId) {
+			if (post.getPostId().equals(post_id)) { 
+				return post;
+			}
+		}
+		return null;
+	}
+
+	public PostRepository getPostRepository() {
+		return postRepository;
+	}
+
+	public void setPostRepository(PostRepository postRepository) {
+		this.postRepository = postRepository;
 	}
 	
 }
