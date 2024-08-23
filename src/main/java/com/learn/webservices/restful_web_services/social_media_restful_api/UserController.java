@@ -3,6 +3,8 @@ package com.learn.webservices.restful_web_services.social_media_restful_api;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,26 +23,26 @@ public class UserController {
 	// Retrieve all users
 	// GET /users
 	@GetMapping(path = "/users")
-	public List<User> getAllUsers() {
+	public ResponseEntity<List<User>> getAllUsers() {
 		List<User> allUsers = userRepository.findAll();
-		return allUsers;
+		return new ResponseEntity<>(allUsers, HttpStatus.OK);
 	}
 	
 	// create a user
 	// POST /users
 	@PostMapping(path = "/users")
-	public User createUser(@RequestParam String name,@RequestParam LocalDate birthDate) {
+	public ResponseEntity<User> createUser(@RequestParam String name,@RequestParam LocalDate birthDate) {
 		User newUser = new User(name,birthDate);
 		userRepository.save(newUser);
-		return newUser;
+		return new ResponseEntity<>(newUser, HttpStatus.CREATED);
 	}
 	
 	// retrieve a user
 	// GET /users/{id}
 	@GetMapping(path = "/users/{id}")
-	public User getUserById(@PathVariable Integer id) {
+	public ResponseEntity<User> getUserById(@PathVariable Integer id) {
 		User userById = userRepository.findById(id).get();
-		return userById;
+		return new ResponseEntity<>(userById, HttpStatus.OK);
 	}
 
 	public UserRepository getUserRepository() {
