@@ -1,5 +1,6 @@
 package com.learn.webservices.restful_web_services.social_media_restful_api;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 public class UserController {
@@ -34,7 +36,11 @@ public class UserController {
 	public ResponseEntity<User> createUser(@RequestParam String name,@RequestParam LocalDate birthDate) {
 		User newUser = new User(name,birthDate);
 		userRepository.save(newUser);
-		return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(newUser.getId())
+				.toUri();
+		return ResponseEntity.created(location).body(newUser);
 	}
 	
 	// retrieve a user
