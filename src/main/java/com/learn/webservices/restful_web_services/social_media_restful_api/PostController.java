@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,14 +50,14 @@ public class PostController {
 	// retrieve details of a post
 	// GET /users/{id}/posts/{post_id}
 	@GetMapping(path = "/users/{user_id}/posts/{post_id}")
-	public Post getPostsById(@PathVariable Integer user_id, @PathVariable Integer post_id) {
+	public ResponseEntity<Post>  getPostsById(@PathVariable Integer user_id, @PathVariable Integer post_id) {
 		List<Post> postsByUserId = postRepository.findByUserId(user_id);
 		for (Post post: postsByUserId) {
 			if (post.getPostId().equals(post_id)) { 
-				return post;
+				return new ResponseEntity<>(post, HttpStatus.OK);
 			}
 		}
-		return null;
+		return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 	}
 
 	public PostRepository getPostRepository() {
