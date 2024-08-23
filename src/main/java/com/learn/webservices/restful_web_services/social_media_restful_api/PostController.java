@@ -26,25 +26,25 @@ public class PostController {
 	// / get all posts
 	// GET /posts
 	@GetMapping(path = "/posts")
-	public List<Post> getAllPosts() {
+	public ResponseEntity<List<Post>> getAllPosts() {
 		List<Post> allPosts = postRepository.findAll();
-		return allPosts;
+		return new ResponseEntity<>(allPosts, HttpStatus.OK);
 	}
 	
 	// get all user posts
 	@GetMapping(path = "/posts/{user_id}")
-	public List<Post> getAllPostsById(@PathVariable Integer user_id) {
+	public ResponseEntity<List<Post>> getAllPostsById(@PathVariable Integer user_id) {
 		List<Post> postsById = postRepository.findByUserId(user_id);
-		return postsById;
+		return new ResponseEntity<>(postsById, HttpStatus.OK);
 	}
 	
 	// create a posts for a user 
 	// POST /usesrs/{id}/posts
 	@PostMapping(path = "/users/{user_id}/posts")
-	public Post createPostById(@PathVariable Integer user_id,@RequestParam String description) {
+	public ResponseEntity<Post> createPostById(@PathVariable Integer user_id,@RequestParam String description) {
 		Post newPost = new Post(user_id,description);
 		postRepository.save(newPost);
-		return newPost;
+		return new ResponseEntity<>(newPost, HttpStatus.CREATED);
 	}
 	
 	// retrieve details of a post
