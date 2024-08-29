@@ -24,11 +24,5 @@ public class SocialMediaErrorDetails  {
 	public String getDetails() {
 		return details;
 	}
-
-	@Override
-	public String toString() {
-		return "SocialMediaErrorDetails [timestamp=" + timestamp + ", message=" + message + ", details=" + details
-				+ "]";
-	}
 	
 }
