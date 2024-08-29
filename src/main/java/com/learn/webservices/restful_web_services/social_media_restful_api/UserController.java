@@ -54,6 +54,15 @@ public class UserController {
 		User userById = userRepository.findById(id).get();
 		return new ResponseEntity<>(userById, HttpStatus.OK);
 	}
+	
+	// delete a user
+	// GET /users/delete/{id}
+	@GetMapping(path = "/users/delete/{id}")
+	public ResponseEntity<String> deleteUserById(@PathVariable Integer id) {
+		User userById = userRepository.findById(id).get();
+		userRepository.delete(userById);
+		return new ResponseEntity<>("User deleted.", HttpStatus.OK);
+	}
 
 	public UserRepository getUserRepository() {
 		return userRepository;
