@@ -11,9 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class UserController {
@@ -37,14 +40,17 @@ public class UserController {
 	// create a user
 	// POST /users
 	@PostMapping(path = "/users")
-	public ResponseEntity<User> createUser(@RequestParam String name,@RequestParam LocalDate birthDate) {
-		User newUser = new User(name,birthDate);
-		userRepository.save(newUser);
+	public ResponseEntity<User> createUser(@RequestBody User user) {
+		logger.debug(user.toString());
+		// save new user
+		userRepository.save(user);
+		
+		// location of created resource
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}")
-				.buildAndExpand(newUser.getId())
+				.buildAndExpand(user.getId())
 				.toUri();
-		return ResponseEntity.created(location).body(newUser);
+		return ResponseEntity.created(location).body(user);
 	}
 	
 	// retrieve a user
