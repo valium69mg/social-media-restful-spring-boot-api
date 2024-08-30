@@ -36,9 +36,9 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
-		SocialMediaErrorDetails errorDetails = new SocialMediaErrorDetails(LocalDate.now(), ex.getMessage(),
+		SocialMediaErrorDetails errorDetails = new SocialMediaErrorDetails(LocalDate.now(), ex.getFieldError().getDefaultMessage(),
 				request.getDescription(false));
-
+		
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 

@@ -20,15 +20,16 @@ import jakarta.validation.Valid;
 
 @RestController
 public class UserController {
-	
+
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private UserRepository userRepository;
-	
+
 	public UserController(UserRepository userRepository) {
 		super();
 		this.userRepository = userRepository;
 	}
+
 	// Retrieve all users
 	// GET /users
 	@GetMapping(path = "/users")
@@ -36,23 +37,21 @@ public class UserController {
 		List<User> allUsers = userRepository.findAll();
 		return new ResponseEntity<>(allUsers, HttpStatus.OK);
 	}
-	
+
 	// create a user
 	// POST /users
 	@PostMapping(path = "/users")
-	public ResponseEntity<User> createUser(@RequestBody User user) {
+	public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
 		logger.debug(user.toString());
 		// save new user
 		userRepository.save(user);
-		
+
 		// location of created resource
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-				.path("/{id}")
-				.buildAndExpand(user.getId())
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId())
 				.toUri();
 		return ResponseEntity.created(location).body(user);
 	}
-	
+
 	// retrieve a user
 	// GET /users/{id}
 	@GetMapping(path = "/users/{id}")
@@ -60,7 +59,7 @@ public class UserController {
 		User userById = userRepository.findById(id).get();
 		return new ResponseEntity<>(userById, HttpStatus.OK);
 	}
-	
+
 	// delete a user
 	// GET /users/delete/{id}
 	@GetMapping(path = "/users/delete/{id}")
